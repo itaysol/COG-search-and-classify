@@ -209,6 +209,18 @@ def habitat_filters_func():
         habitat_filters_list.append((filter_num, filter_name))
 
 
+def add_activity_to_dict(a_file, cog, a_dict, key):
+    lines = a_file.readlines()
+    for line in lines:
+        if(cog == line[3:7]):
+            if(line[8:9] not in a_dict.keys()):
+                a_dict[line[8:9]] = 0   
+                a_dict[line[8:9]] += key
+                a_file.close
+                break
+
+
+
 def find_suspected_activity(d,cogx,dmers_dict):
     a_dict = {}
     cogs_num = 0
@@ -217,20 +229,15 @@ def find_suspected_activity(d,cogx,dmers_dict):
         for motif in dmers_dict[key]:
             cogs = motif.split() 
             for cog in cogs:
-                if(cog != cogx):
+                if cog == cogx:
+                    continue
+                else:
                     with open ("COG_INFO_TABLE.txt",'r') as a_file:
-                        lines = a_file.readlines()
-                        for line in lines:
-                            if(cog == line[3:7]):
-                                if(line[8:9] not in a_dict.keys()):
-                                    a_dict[line[8:9]] = 0   
-                                a_dict[line[8:9]] += key
-                                a_file.close
-                                break
+                        add_activity_to_dict(a_file, cog, a_dict, )
     sorted_dict = dict(sorted(a_dict.items(), key=lambda x: x[1],reverse=True))
     sorted_list= list(sorted_dict.items())
     final_dict={}
-    print("Result Summary: after going through the adjacent cogs we suspect that those might be the cogs activities\n")
+    print("Result Summary: after going through the adjacent cogs we suspect that those might be the cog's activities\n")
 
     for i in range(3):
         if(i<len(sorted_list)):
